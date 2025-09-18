@@ -14,5 +14,5 @@ type Data struct {
 }
 
 func main() {
-	//empty
+	//empty...
 }
