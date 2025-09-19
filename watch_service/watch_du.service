@@ -1,0 +1,13 @@
+[Unit]
+Description=Start-watch
+
+[Service]
+Type=simple
+User=root
+Environment=TERM=linux
+Restart=on-success
+RestartSec=5s
+ExecStart=/usr/bin/watch -n5 'du -s /var/log/ >> /var/log/watchlogs.txt 2>/dev/null'
+
+[Install]
+WantedBy=multi-user.target
