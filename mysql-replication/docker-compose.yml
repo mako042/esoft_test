@@ -17,7 +17,7 @@ services:
     build: ./slave
     container_name: mysql-slave
     environment:
-      MYSQL_ROOT_PASSWORD: user
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - "3307:3306"
     volumes:

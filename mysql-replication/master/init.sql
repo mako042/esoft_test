@@ -8,6 +8,6 @@ CREATE TABLE IF NOT EXISTS users (
 INSERT INTO users (name) VALUES ('Esoft'), ('Test');
 
 
-CREATE USER 'repl_user'@'%' IDENTIFIED BY 'repl_password';
-GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'%';
-FLUSH PRIVILEGES;
+CREATE USER 'replication'@'%';
+GRANT REPLICATION SLAVE ON *.* TO 'replication'@'%';
+
