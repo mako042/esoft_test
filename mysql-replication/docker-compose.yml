@@ -1,29 +1,33 @@
-version: '3.8'
-
 services:
   mysql-master:
-    build: ./master
+    image: mysql:8.0
     container_name: mysql-master
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: ""
     ports:
       - "3306:3306"
+    networks:
+      - mysql-network
     volumes:
       - master_data:/var/lib/mysql
-    networks:
-      - mysql-network
+      - ./master/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./master/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   mysql-slave:
-    build: ./slave
+    image: mysql:8.0
     container_name: mysql-slave
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: ""
     ports:
       - "3307:3306"
-    volumes:
-      - slave_data:/var/lib/mysql
     networks:
       - mysql-network
+    volumes:
+      - slave_data:/var/lib/mysql
+      - ./slave/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./slave/init.sql:/docker-entrypoint-initdb.d/init.sql
     depends_on:
       - mysql-master
 
