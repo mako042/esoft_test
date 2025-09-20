@@ -27,3 +27,37 @@ URL: http://example.com/
 1. Создан файл watch_du.service, STDOUT перенаправляется в /var/log/watchlogs.txt, STDERR в /dev/null.
 2. Задана перезагрузка в случае on-success (так как watch при перезагрузке завершает работу с кодом 0, ему не подходит вариант перезапуска on-failure). Так же, задана переменная окружения TERM=linux.
 3. Сервис активирован командой systemctl enable. Пример вывода можно посмотреть в прикреплённом файле watchlogs.txt.
+
+## 4. Развернуть 2 докер контейнера с mysql. Один будет master, другой slave. Задать конфигурацию баз с указанием - что зачем и почему так. Базы должны быть доступны вне контейнера. Итогом задания - docker-compose с мануальной сборкой mysql и наполнением тестовых данных. 
+Как реализовано:
+1. Создан docker compose, который запускает два сервиса -- mysql-master и mysql-slave. Сервисы объединены в сетевой бридж, у каждого сервиса свой volumes, так же прокинуты файлы конфигураций и начальных команд.
+2. После запуска и сборки мастер создаётся с неполненной базой test_db, slave создаётся с пустой базой test_db. Мастер имеет id 1, слейв id 2.
+3. Создаётся слепок актуальной базы из мастера, для этого останавливается запись в мастере, делается dump на локальную машину, после чего slave принимает этот dump, запись на мастере разблокирована обратно.
+```
+sudo docker exec -it mysql-master mysql -e 'FLUSH TABLES WITH READ LOCK;'
+sudo docker exec -it mysql-master mysqldump test_db > test_db.sql
+sudo docker exec -i mysql-slave mysql test_db < test_db.sql
+sudo docker exec -it mysql-master mysql -e 'UNLOCK TABLES;'
+4. После синхронизации базы получаем имя файла и его расположение на мастере
+```
+sudo docker exec -it mysql-master mysql -e 'show master status;'
+```
+5. Далее, настраиваем slave, в качестве имени хоста используем имя контейнера, в качестве имени пользователя используем изначально прописанного пользователя из init.sql
+```
+sudo docker exec -i mysql-slave mysql -e 'CHANGE MASTER TO MASTER_HOST="mysql-master", MASTER_USER="replication",
+MASTER_LOG_FILE="mysql-bin.000003", MASTER_LOG_POS=157;'
+```
+6. Послее чего включаем slave и смотрим его статус
+```
+sudo docker exec -i mysql-slave mysql -e 'start slave;'
+sudo docker exec -i mysql-slave mysql -e 'show slave status\G;'
+```
+7. Теперь можем вносить изменения в master, новые данные автоматически появятся в slave
+```
+#Отображаем содержимое slave 
+sudo docker exec -i mysql-slave mysql -e 'USE test_db; SELECT * FROM users;'
+#Вносим изменения в master
+sudo docker exec -i mysql-master mysql -e 'USE test_db; INSERT INTO users (name) VALUES ("1value"), ("2value");'
+#Отображаем содержимое slave 
+sudo docker exec -i mysql-slave mysql -e 'USE test_db; SELECT * FROM users;'
+```
