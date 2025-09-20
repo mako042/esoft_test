@@ -38,6 +38,7 @@ sudo docker exec -it mysql-master mysql -e 'FLUSH TABLES WITH READ LOCK;'
 sudo docker exec -it mysql-master mysqldump test_db > test_db.sql
 sudo docker exec -i mysql-slave mysql test_db < test_db.sql
 sudo docker exec -it mysql-master mysql -e 'UNLOCK TABLES;'
+```
 4. После синхронизации базы получаем имя файла и его расположение на мастере
 ```
 sudo docker exec -it mysql-master mysql -e 'show master status;'
