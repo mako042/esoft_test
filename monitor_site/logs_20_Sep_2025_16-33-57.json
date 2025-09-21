@@ -1,0 +1,5 @@
+{"Time":"20_Sep_2025_16-33-57","Url":"http://127.0.0.1","State":false,"Status":"ERROR","Descriptions":"Get \"http://127.0.0.1\": dial tcp 127.0.0.1:80: connect: connection refused"}
+{"Time":"20_Sep_2025_16-34-11","Url":"http://127.0.0.1","State":true,"Status":"UP","Descriptions":"OK"}
+{"Time":"20_Sep_2025_16-34-26","Url":"http://127.0.0.1","State":true,"Status":"UP","Descriptions":"OK"}
+{"Time":"20_Sep_2025_16-34-40","Url":"http://127.0.0.1","State":true,"Status":"UP","Descriptions":"OK"}
+{"Time":"20_Sep_2025_16-34-55","Url":"http://127.0.0.1","State":false,"Status":"ERROR","Descriptions":"Get \"http://127.0.0.1\": dial tcp 127.0.0.1:80: connect: connection refused"}

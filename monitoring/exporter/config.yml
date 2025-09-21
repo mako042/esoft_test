@@ -1,0 +1,29 @@
+# mysql-exporter-config/config.yml
+global:
+  scrape_timeout: 10s
+
+# Настройки для master
+master:
+  data_source_name: "e:admin@tcp(mysql-master:3306)/"
+  collect:
+    # Собираем все стандартные метрики
+    global_status: true
+    global_variables: true
+    slave_status: true
+    binlog_size: true
+    info_schema.processlist: true
+    info_schema.innodb_metrics: true
+    info_schema.innodb_tablespaces: true
+    info_schema.innodb_cmp: true
+    info_schema.innodb_cmpmem: true
+    info_schema.query_response_time: true
+
+# Настройки для slave
+slave:
+  data_source_name: "e:admin@tcp(mysql-slave:3307)/"
+  collect:
+    global_status: true
+    global_variables: true
+    slave_status: true  # Особенно важно для slave
+    binlog_size: true
+    info_schema.processlist: true

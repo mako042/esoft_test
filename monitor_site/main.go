@@ -29,7 +29,7 @@ func main() {
 	}
 
 	d := &Data{}
-	url := "https://google.com/"
+	url := "http://127.0.0.1"
 
 	filename := fmt.Sprintf("logs_%s.json", time.Now().Format("02_Jan_2006_15-04-05"))
 	file, err := os.Create(filename)

@@ -1,0 +1,77 @@
+services:
+  mysql-master:
+    image: mysql:8.0
+    container_name: mysql-master
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: ""
+    ports:
+      - "3306:3306"
+    networks:
+      - mysql-network
+    volumes:
+      - master_data:/var/lib/mysql
+      - ./master/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./master/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mysql-slave:
+    image: mysql:8.0
+    container_name: mysql-slave
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: ""
+    ports:
+      - "3307:3306"
+    networks:
+      - mysql-network
+    volumes:
+      - slave_data:/var/lib/mysql
+      - ./slave/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./slave/init.sql:/docker-entrypoint-initdb.d/init.sql
+    depends_on:
+      - mysql-master
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+   networks:
+      - mysql-network
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - mysql-master
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - mysql-network
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - mysql-master
+
+  exporter:
+    image: prom/mysqld-exporter
+    container_name: exporter
+    ports:
+      - "9104:9104"
+    networks:
+      - mysql-network
+    volumes:
+      - ./exporter/.my.cfg
+
+networks:
+  mysql-network:
+    driver: bridge
+
+volumes:
+  master_data:
+  slave_data:
+  prometheus_data:
+  grafana_data:

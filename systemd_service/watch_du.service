@@ -1,0 +1,11 @@
+[Unit]
+Description=Start-watch
+After=default.target
+
+[Service]
+User=user1
+Restart=Always
+ExecStart=watch -n5 'du -s /var/log/ >> logs.txt 2>/dev/null/'
+
+[Install]
+WantedBy=default.target
