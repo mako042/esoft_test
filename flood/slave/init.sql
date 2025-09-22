@@ -1,26 +1,13 @@
 CREATE DATABASE IF NOT EXISTS test_db;
 USE test_db;
 
-CREATE TABLE user_cart (
-  id INT NOT NULL AUTO_INCREMENT,
-  user_id INT NOT NULL,
-  product_id INT NOT NULL,
-  quantity INT NOT NULL DEFAULT 1,
-  item_price_cents INT NOT NULL,
-  total_price_cents INT NOT NULL,
-  original_product_id INT,
-  category_id INT,
-  warehouse_id INT,
-  promotion_id INT DEFAULT NULL,
-
-  product_name VARCHAR(255) NOT NULL,
-  product_attributes VARCHAR(255),
-  session_id VARCHAR(255),
-
-  PRIMARY KEY (id),
-  INDEX idx_user_id (user_id)
+CREATE TABLE IF NOT EXISTS test_data (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+	int_field1 INT, int_field2 INT, int_field3 INT, int_field4 INT, int_field5 INT,
+	int_field6 INT, int_field7 INT, int_field8 INT, int_field9 INT, int_field10 INT,
+	varchar_field1 VARCHAR(255), varchar_field2 VARCHAR(255), varchar_field3 VARCHAR(255),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 
 CREATE USER 'exporter'@'%' IDENTIFIED BY 'admin' WITH MAX_USER_CONNECTIONS 3;
 GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'%';

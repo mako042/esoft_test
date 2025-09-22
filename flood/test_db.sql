@@ -16,38 +16,39 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `user_cart`
+-- Table structure for table `test_data`
 --
 
-DROP TABLE IF EXISTS `user_cart`;
+DROP TABLE IF EXISTS `test_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_cart` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `product_id` int NOT NULL,
-  `quantity` int NOT NULL DEFAULT '1',
-  `item_price_cents` int NOT NULL,
-  `total_price_cents` int NOT NULL,
-  `original_product_id` int DEFAULT NULL,
-  `category_id` int DEFAULT NULL,
-  `warehouse_id` int DEFAULT NULL,
-  `promotion_id` int DEFAULT NULL,
-  `product_name` varchar(255) NOT NULL,
-  `product_attributes` varchar(255) DEFAULT NULL,
-  `session_id` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_user_id` (`user_id`)
+CREATE TABLE `test_data` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `int_field1` int DEFAULT NULL,
+  `int_field2` int DEFAULT NULL,
+  `int_field3` int DEFAULT NULL,
+  `int_field4` int DEFAULT NULL,
+  `int_field5` int DEFAULT NULL,
+  `int_field6` int DEFAULT NULL,
+  `int_field7` int DEFAULT NULL,
+  `int_field8` int DEFAULT NULL,
+  `int_field9` int DEFAULT NULL,
+  `int_field10` int DEFAULT NULL,
+  `varchar_field1` varchar(255) DEFAULT NULL,
+  `varchar_field2` varchar(255) DEFAULT NULL,
+  `varchar_field3` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_cart`
+-- Dumping data for table `test_data`
 --
 
-LOCK TABLES `user_cart` WRITE;
-/*!40000 ALTER TABLE `user_cart` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_cart` ENABLE KEYS */;
+LOCK TABLES `test_data` WRITE;
+/*!40000 ALTER TABLE `test_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `test_data` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -59,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-22  1:51:51
+-- Dump completed on 2025-09-22  4:56:08

@@ -2,53 +2,64 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
-	"sync"
+	"math/rand"
+	"sync/atomic"
+	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
+var counter uint64
+
 func main() {
-	db, err := sql.Open("mysql", "root:@tcp(mysql-master:3306)/test_db")
-	if err != nil {
-		log.Fatal(err)
-	}
+	dbconf := "root:@tcp(mysql-master:3306)/test_db"
+	targetRPS := 1000/3
+	duration := 20 * time.Minute
 
+	db, err := sql.Open("mysql", dbconf)
+	if err != nil {
+		log.Fatal("Connection error:", err)
+	}
 	defer db.Close()
-	err = db.Ping()
-	if err != nil {
-		log.Fatal("Не удалось подключиться к базе данных:", err)
+
+	start := time.Now()
+	ticker := time.NewTicker(time.Second / time.Duration(targetRPS))
+	defer ticker.Stop()
+
+	for i := 0; time.Since(start) < duration; i++ {
+		<-ticker.C
+		go insert(db)
+	}
+}
+
+    func insert(db *sql.DB) {
+	query := `INSERT INTO test_data (
+		int_field1, int_field2, int_field3, int_field4, int_field5,
+		int_field6, int_field7, int_field8, int_field9, int_field10,
+		varchar_field1, varchar_field2, varchar_field3
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+	args := make([]interface{}, 13)
+	for i := 0; i < 10; i++ {
+		args[i] = rand.Int31()
+	}
+	for i := 10; i < 13; i++ {
+		args[i] = randString(255)
 	}
 
-	var wg sync.WaitGroup
-		for i := 0; i < 100; i++ {
-			wg.Add(1)
-			go func(iteration int) {
-				defer wg.Done()
-				for j := 0; j < 20; j++ {
-					_, err := db.Exec(
-						"INSERT INTO user_cart (user_id, product_id, quantity, item_price_cents, total_price_cents, original_product_id, category_id, warehouse_id, promotion_id, product_name, product_attributes, session_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-						15432, // user_id
-						88765, // product_id
-						2,     // quantity
-						29999, // item_price_cents (299.99)
-						59998, // total_price_cents (599.98)
-						88760, // original_product_id
-						15,    // category_id (электроника)
-						3,     // warehouse_id
-						nil,   // promotion_id (NULL)
-						"Смартфон iPhone 15 Pro 128GB Синий", // product_name
-						"color:blue|storage:128gb|model:pro", // product_attributes
-						"a1b2c3d4e5f6g7h8i9j0",               // session_id
-					)
+	if _, err := db.Exec(query, args...); err != nil {
+		log.Println(err)
+		return
+	}
+	atomic.AddUint64(&counter, 1)
+}
 
-					if err != nil {
-						log.Printf("Ошибка при вставке записи %d: %v", iteration, err)
-					}
-				}
-			}(i)
-		}
-
-	wg.Wait()
-	fmt.Println("Все операции завершены")
+func randString(n int) string {
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
