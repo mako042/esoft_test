@@ -36,7 +36,7 @@ services:
     container_name: prometheus
     ports:
       - "9090:9090"
-   networks:
+    networks:
       - mysql-network
     volumes:
       - prometheus_data:/prometheus
@@ -64,7 +64,7 @@ services:
     networks:
       - mysql-network
     volumes:
-      - ./exporter/.my.cfg
+      - ./exporter/my.cnf:/.my.cnf
 
 networks:
   mysql-network:

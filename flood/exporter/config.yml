@@ -4,7 +4,7 @@ global:
 
 # Настройки для master
 master:
-  data_source_name: "e:admin@tcp(mysql-master:3306)/"
+  data_source_name: "e:admin@mysql-master:3306/"
   collect:
     # Собираем все стандартные метрики
     global_status: true
@@ -20,10 +20,10 @@ master:
 
 # Настройки для slave
 slave:
-  data_source_name: "e:admin@tcp(mysql-slave:3307)/"
+  data_source_name: "e:admin@mysql-slave:3307/"
   collect:
     global_status: true
     global_variables: true
-    slave_status: true  # Особенно важно для slave
+    slave_status: true
     binlog_size: true
     info_schema.processlist: true

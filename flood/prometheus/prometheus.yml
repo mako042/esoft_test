@@ -44,14 +44,23 @@ scrape_configs:
     labels:
       app: prometheus
 
-- job_name: 'prometheus_node_exporter'
-  scrape_interval: 5s
+- job_name: mysql # To get metrics about the mysql exporter’s targets
+  metrics_path: /probe
+  params:
+  # Not required. Will match value to child in config file. Default value is `client`.
+    auth_module: [client.servers]
   static_configs:
-  - targets: ['45.132.176.156:9100']
-
-- job_name: mysql
-  static_configs:
-  - targets: ['localhost:9104']
-
+    - targets:
+      # All mysql hostnames or unix sockets to monitor.
+      - mysql-master:3306
+      - mysql-slave:3306
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      # The mysqld_exporter host:port
+      replacement: exporter:9104
 otlp:
   translation_strategy: UnderscoreEscapingWithSuffixes
