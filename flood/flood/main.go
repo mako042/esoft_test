@@ -14,7 +14,7 @@ var counter uint64
 
 func main() {
 	dbconf := "root:@tcp(mysql-master:3306)/test_db"
-	targetRPS := 1000
+	targetRPS := 800
 	duration := 20 * time.Minute
 
 	db, err := sql.Open("mysql", dbconf)
