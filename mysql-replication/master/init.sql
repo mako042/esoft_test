@@ -5,9 +5,6 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL
 );
 
-INSERT INTO users (name) VALUES ('Esoft'), ('Test');
-
-
 CREATE USER 'replication'@'%';
 GRANT REPLICATION SLAVE ON *.* TO 'replication'@'%';
 
